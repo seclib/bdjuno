@@ -1,12 +1,13 @@
 package actions
 
 import (
-	"github.com/cosmos/cosmos-sdk/simapp/params"
 	"github.com/forbole/juno/v4/modules"
 	"github.com/forbole/juno/v4/node"
 	"github.com/forbole/juno/v4/node/builder"
 	nodeconfig "github.com/forbole/juno/v4/node/config"
 	"github.com/forbole/juno/v4/types/config"
+
+	bbnparams "github.com/babylonchain/babylon/app/params"
 
 	modulestypes "github.com/forbole/bdjuno/v4/modules/types"
 )
@@ -26,7 +27,7 @@ type Module struct {
 	sources *modulestypes.Sources
 }
 
-func NewModule(cfg config.Config, encodingConfig *params.EncodingConfig) *Module {
+func NewModule(cfg config.Config, encodingConfig *bbnparams.EncodingConfig) *Module {
 	bz, err := cfg.GetBytes()
 	if err != nil {
 		panic(err)

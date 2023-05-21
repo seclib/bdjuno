@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	bbnparams "github.com/babylonchain/babylon/app/params"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cosmos/cosmos-sdk/simapp/params"
 	"github.com/forbole/juno/v4/node/remote"
 
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -51,7 +51,7 @@ type Sources struct {
 	StakingSource  stakingsource.Source
 }
 
-func BuildSources(nodeCfg nodeconfig.Config, encodingConfig *params.EncodingConfig) (*Sources, error) {
+func BuildSources(nodeCfg nodeconfig.Config, encodingConfig *bbnparams.EncodingConfig) (*Sources, error) {
 	switch cfg := nodeCfg.Details.(type) {
 	case *remote.Details:
 		return buildRemoteSources(cfg)
@@ -63,7 +63,7 @@ func BuildSources(nodeCfg nodeconfig.Config, encodingConfig *params.EncodingConf
 	}
 }
 
-func buildLocalSources(cfg *local.Details, encodingConfig *params.EncodingConfig) (*Sources, error) {
+func buildLocalSources(cfg *local.Details, encodingConfig *bbnparams.EncodingConfig) (*Sources, error) {
 	source, err := local.NewSource(cfg.Home, encodingConfig)
 	if err != nil {
 		return nil, err

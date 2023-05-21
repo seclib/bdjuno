@@ -1,6 +1,8 @@
 package main
 
 import (
+	bbnapp "github.com/babylonchain/babylon/app"
+	bbncfg "github.com/babylonchain/rpc-client/config"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/forbole/juno/v4/cmd"
 	initcmd "github.com/forbole/juno/v4/cmd/init"
@@ -14,6 +16,7 @@ import (
 	"github.com/forbole/bdjuno/v4/types/config"
 
 	"github.com/cosmos/cosmos-sdk/simapp"
+
 	"github.com/forbole/bdjuno/v4/database"
 	"github.com/forbole/bdjuno/v4/modules"
 )
@@ -24,7 +27,7 @@ func main() {
 
 	parseCfg := parsetypes.NewConfig().
 		WithDBBuilder(database.Builder).
-		WithEncodingConfigBuilder(config.MakeEncodingConfig(getBasicManagers())).
+		WithEncodingConfigBuilder(bbncfg.GetEncodingConfig).
 		WithRegistrar(modules.NewRegistrar(getAddressesParser()))
 
 	cfg := cmd.NewConfig("bdjuno").
@@ -55,6 +58,7 @@ func main() {
 func getBasicManagers() []module.BasicManager {
 	return []module.BasicManager{
 		simapp.ModuleBasics,
+		bbnapp.ModuleBasics,
 	}
 }
 
