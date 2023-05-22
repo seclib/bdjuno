@@ -4,6 +4,8 @@ go 1.19
 
 require (
 	cosmossdk.io/math v1.0.0-beta.3
+	github.com/babylonchain/babylon v0.5.0
+	github.com/babylonchain/rpc-client v0.1.1-0.20230411064808-645ee44544af
 	github.com/cosmos/cosmos-sdk v0.46.7
 	github.com/forbole/juno/v4 v4.0.0-20230207053719-d0f32f8970c3
 	github.com/go-co-op/gocron v1.27.1
@@ -35,8 +37,6 @@ require (
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/avast/retry-go/v4 v4.3.0 // indirect
 	github.com/aws/aws-sdk-go v1.40.45 // indirect
-	github.com/babylonchain/babylon v0.5.0 // indirect
-	github.com/babylonchain/rpc-client v0.1.1-0.20230411064808-645ee44544af // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
@@ -156,6 +156,8 @@ require (
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
+	go.uber.org/multierr v1.8.0 // indirect
+	go.uber.org/zap v1.23.0 // indirect
 	golang.org/x/crypto v0.2.0 // indirect
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
 	golang.org/x/net v0.8.0 // indirect
@@ -178,7 +180,7 @@ replace (
 
 	github.com/cosmos/ibc-go/v5 => github.com/babylonchain/ibc-go/v5 v5.0.1-0.20221107054049-dbf7e4efe6fd
 
-	github.com/forbole/juno/v4 => ../juno
+	github.com/forbole/juno/v4 => github.com/babylonchain/juno/v4 v4.1.1-0.20230521113114-9f69394afcf7
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.7.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
