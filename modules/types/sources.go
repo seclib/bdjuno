@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	bbnapp "github.com/babylonchain/babylon/app"
 	bbnparams "github.com/babylonchain/babylon/app/params"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/tendermint/tendermint/libs/log"
@@ -40,15 +41,23 @@ import (
 	stakingsource "github.com/forbole/bdjuno/v4/modules/staking/source"
 	localstakingsource "github.com/forbole/bdjuno/v4/modules/staking/source/local"
 	remotestakingsource "github.com/forbole/bdjuno/v4/modules/staking/source/remote"
+
+	btclightclienttypes "github.com/babylonchain/babylon/x/btclightclient/types"
+
+	btclightclientsource "github.com/forbole/bdjuno/v4/modules/btclightclient/source"
+	localbtclightclientsource "github.com/forbole/bdjuno/v4/modules/btclightclient/source/local"
+
+	remotebtclightclientsource "github.com/forbole/bdjuno/v4/modules/btclightclient/source/remote"
 )
 
 type Sources struct {
-	BankSource     banksource.Source
-	DistrSource    distrsource.Source
-	GovSource      govsource.Source
-	MintSource     mintsource.Source
-	SlashingSource slashingsource.Source
-	StakingSource  stakingsource.Source
+	BankSource           banksource.Source
+	DistrSource          distrsource.Source
+	GovSource            govsource.Source
+	MintSource           mintsource.Source
+	SlashingSource       slashingsource.Source
+	StakingSource        stakingsource.Source
+	BtcLightClientSource btclightclientsource.Source
 }
 
 func BuildSources(nodeCfg nodeconfig.Config, encodingConfig *bbnparams.EncodingConfig) (*Sources, error) {
@@ -74,13 +83,21 @@ func buildLocalSources(cfg *local.Details, encodingConfig *bbnparams.EncodingCon
 		cfg.Home, 0, simapp.MakeTestEncodingConfig(), simapp.EmptyAppOptions{},
 	)
 
+	// For BtcLightClientSource
+	privSigner, err := bbnapp.SetupPrivSigner()
+	if err != nil {
+		return nil, err
+	}
+	babylonApp := bbnapp.NewBabylonApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), source.StoreDB, nil, true, map[int64]bool{}, cfg.Home, 0, *encodingConfig, privSigner, simapp.EmptyAppOptions{})
+
 	sources := &Sources{
-		BankSource:     localbanksource.NewSource(source, banktypes.QueryServer(app.BankKeeper)),
-		DistrSource:    localdistrsource.NewSource(source, distrtypes.QueryServer(app.DistrKeeper)),
-		GovSource:      localgovsource.NewSource(source, govtypesv1.QueryServer(app.GovKeeper), nil),
-		MintSource:     localmintsource.NewSource(source, minttypes.QueryServer(app.MintKeeper)),
-		SlashingSource: localslashingsource.NewSource(source, slashingtypes.QueryServer(app.SlashingKeeper)),
-		StakingSource:  localstakingsource.NewSource(source, stakingkeeper.Querier{Keeper: app.StakingKeeper}),
+		BankSource:           localbanksource.NewSource(source, banktypes.QueryServer(app.BankKeeper)),
+		DistrSource:          localdistrsource.NewSource(source, distrtypes.QueryServer(app.DistrKeeper)),
+		GovSource:            localgovsource.NewSource(source, govtypesv1.QueryServer(app.GovKeeper), nil),
+		MintSource:           localmintsource.NewSource(source, minttypes.QueryServer(app.MintKeeper)),
+		SlashingSource:       localslashingsource.NewSource(source, slashingtypes.QueryServer(app.SlashingKeeper)),
+		StakingSource:        localstakingsource.NewSource(source, stakingkeeper.Querier{Keeper: app.StakingKeeper}),
+		BtcLightClientSource: localbtclightclientsource.NewSource(source, btclightclienttypes.QueryServer(babylonApp.BTCLightClientKeeper)),
 	}
 
 	// Mount and initialize the stores
@@ -114,11 +131,12 @@ func buildRemoteSources(cfg *remote.Details) (*Sources, error) {
 	}
 
 	return &Sources{
-		BankSource:     remotebanksource.NewSource(source, banktypes.NewQueryClient(source.GrpcConn)),
-		DistrSource:    remotedistrsource.NewSource(source, distrtypes.NewQueryClient(source.GrpcConn)),
-		GovSource:      remotegovsource.NewSource(source, govtypesv1.NewQueryClient(source.GrpcConn), govtypesv1beta1.NewQueryClient(source.GrpcConn)),
-		MintSource:     remotemintsource.NewSource(source, minttypes.NewQueryClient(source.GrpcConn)),
-		SlashingSource: remoteslashingsource.NewSource(source, slashingtypes.NewQueryClient(source.GrpcConn)),
-		StakingSource:  remotestakingsource.NewSource(source, stakingtypes.NewQueryClient(source.GrpcConn)),
+		BankSource:           remotebanksource.NewSource(source, banktypes.NewQueryClient(source.GrpcConn)),
+		DistrSource:          remotedistrsource.NewSource(source, distrtypes.NewQueryClient(source.GrpcConn)),
+		GovSource:            remotegovsource.NewSource(source, govtypesv1.NewQueryClient(source.GrpcConn), govtypesv1beta1.NewQueryClient(source.GrpcConn)),
+		MintSource:           remotemintsource.NewSource(source, minttypes.NewQueryClient(source.GrpcConn)),
+		SlashingSource:       remoteslashingsource.NewSource(source, slashingtypes.NewQueryClient(source.GrpcConn)),
+		StakingSource:        remotestakingsource.NewSource(source, stakingtypes.NewQueryClient(source.GrpcConn)),
+		BtcLightClientSource: remotebtclightclientsource.NewSource(source, btclightclienttypes.NewQueryClient(source.GrpcConn)),
 	}, nil
 }
