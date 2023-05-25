@@ -3,7 +3,7 @@ CREATE TABLE btc_header_info
     height BIGINT UNIQUE PRIMARY KEY,
     hash   TEXT NOT NULL UNIQUE,
     header TEXT NOT NULL UNIQUE,
-    work   BIGINT DEFAULT 0
+    work   TEXT NOT NULL
 );
 CREATE INDEX btc_header_info_height_index ON btc_header_info (height);
 CREATE INDEX btc_header_info_hash_index ON btc_header_info (hash);
