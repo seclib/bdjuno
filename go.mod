@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/cosmos/cosmos-sdk v0.45.11
 	github.com/cosmos/gaia/v7 v7.1.0
-	github.com/desmos-labs/desmos/v4 v4.7.0
+	github.com/desmos-labs/desmos/v4 v4.8.1
 	github.com/forbole/juno/v3 v3.4.0
 	github.com/go-co-op/gocron v1.16.1
 	github.com/gogo/protobuf v1.3.3
